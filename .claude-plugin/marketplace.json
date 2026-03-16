@@ -1,0 +1,18 @@
+{
+  "name": "dev-radar",
+  "description": "GitHub trending repos, qualified against your workspace",
+  "owner": {
+    "name": "Imraan"
+  },
+  "plugins": [
+    {
+      "name": "dev-radar",
+      "source": "./plugin",
+      "description": "Scan GitHub trending repos and find what's relevant to your current workspace",
+      "version": "0.1.0",
+      "author": {
+        "name": "Imraan"
+      }
+    }
+  ]
+}
