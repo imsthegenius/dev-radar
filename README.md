@@ -25,7 +25,7 @@ git clone https://github.com/imsthegenius/dev-radar.git ~/dev-radar
 Then launch Claude Code with the plugin:
 
 ```bash
-claude --plugin-dir ~/dev-radar
+claude --plugin-dir ~/dev-radar/plugin
 ```
 
 ## Usage

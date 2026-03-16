@@ -40,7 +40,7 @@ Build a mental model of:
 Run the scraper using `CLAUDE_PLUGIN_ROOT` (always set by Claude Code for installed plugins):
 
 ```bash
-python3 "$CLAUDE_PLUGIN_ROOT/scripts/github_trending.py" --since=weekly
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/github_trending.py" --since=weekly
 ```
 
 If the user passed `--daily`, use `--since=daily`.
