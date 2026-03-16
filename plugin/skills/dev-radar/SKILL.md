@@ -70,7 +70,9 @@ Drop obvious irrelevance (e.g., a Minecraft mod for someone building SaaS).
 
 ## Step 4 — Deep-read shortlisted repos
 
-For each of the ~8-10 shortlisted repos, use the WebFetch tool to fetch their README:
+Fetch all shortlisted READMEs **in parallel** — issue multiple WebFetch calls
+in a single turn to avoid sequential round-trips (this cuts runtime from ~3
+minutes to ~1 minute):
 
 ```
 https://raw.githubusercontent.com/{owner}/{repo}/main/README.md
@@ -128,6 +130,9 @@ Better to show 4 brilliant recs than 8 mediocre ones.
 
 ## Step 6 — Present rich recommendations
 
+Start directly with the first recommendation. Do NOT put a summary count
+before the recommendations — the summary goes only at the end as a wrap-up.
+
 Format each recommendation as a mini-briefing:
 
 ```markdown
@@ -135,7 +140,7 @@ Format each recommendation as a mini-briefing:
 
 ---
 
-### {emoji} {owner/repo} · {stars_today} stars today
+### {emoji} {owner/repo} · {velocity_label}
 
 **What it is**: {2-3 sentences — what the repo actually does, based on the
 README you read, not just the tagline}
@@ -145,14 +150,25 @@ Reference the user's actual projects, tools, clients, or trajectory. Explain
 what they could BUILD or CHANGE. Be concrete — name their files, their services,
 their workflows.}
 
-**How you'd use it**: {1-2 sentences — the first concrete step to try it}
+**How you'd use it**: {A concrete numbered sequence — the exact commands or
+steps to go from zero to a working prototype. Not vague ("try it out") but
+specific ("1. npm install X, 2. create a config at Y, 3. run Z"). Think:
+what would you paste into a terminal or editor right now?}
 
 ---
 ```
 
+**Velocity labels** — don't just show raw numbers, qualify them so the user
+knows what's normal vs exceptional:
+- 10,000+ stars/day → "🚀 {N} stars today (viral)"
+- 2,000-9,999 stars/day → "+{N} stars today (surging)"
+- 500-1,999 stars/day → "+{N} stars today (climbing)"
+- Under 500 stars/day → "+{N} stars today"
+
 Use these emojis for variety: 🔥 📡 🧪 ⚡ 🛠️ 🧠 🎯 🚀
 
-End with a summary line and invitation:
+End with the summary line and invitation (this is the ONLY place the count
+appears — not at the top):
 
 ```markdown
 ---
