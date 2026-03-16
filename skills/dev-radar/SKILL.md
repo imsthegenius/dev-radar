@@ -1,7 +1,6 @@
 ---
 name: dev-radar
-description: Scan GitHub trending repos, score relevance against workspace context, present ranked findings. Triggered by /scan command or when user asks about trending repos, new tools, or what's hot on GitHub.
-allowed-tools: Bash, Read, Glob, WebFetch
+description: This skill should be used when the user wants to discover trending GitHub repositories and understand how they connect to their current projects. Relevant when the user asks about trending repos, what's new on GitHub, interesting open source tools, developer news, tech radar, new libraries or frameworks worth knowing about, what tools are gaining traction, or what's hot in open source.
 user-invocable: false
 ---
 
@@ -39,19 +38,22 @@ Build a mental model of:
 
 ## Step 2 — Fetch trending repos
 
-Run the scraper:
+Run the scraper. Resolve the script path using `CLAUDE_PLUGIN_ROOT` if set,
+otherwise fall back to the path relative to this skill file (`../../scripts/github_trending.py`):
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/github_trending.py" --since=weekly
+SCRIPT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}/scripts/github_trending.py"
+python3 "$SCRIPT" --since=weekly
 ```
 
 If the user passed `--daily`, use `--since=daily`.
+If the user passed `--monthly`, use `--since=monthly`.
 If the user passed `--languages=X`, add `--languages=X`.
 If the user passed `--no-cache`, add `--no-cache`.
 
-Use a Bash timeout of 60000 (1 minute).
+Use a Bash timeout of 60000 ms (1 minute).
 
-Parse the JSON output. You'll get ~25 repos with name, description, language,
+Parse the JSON output. Expect ~15-25 repos with name, description, language,
 stars, and velocity (stars_today).
 
 ---
@@ -71,10 +73,10 @@ Drop obvious irrelevance (e.g., a Minecraft mod for someone building SaaS).
 
 ## Step 4 — Deep-read shortlisted repos
 
-For each of the ~8-10 shortlisted repos, fetch their README:
+For each of the ~8-10 shortlisted repos, use the WebFetch tool to fetch their README:
 
 ```
-WebFetch: https://raw.githubusercontent.com/{owner}/{repo}/main/README.md
+https://raw.githubusercontent.com/{owner}/{repo}/main/README.md
 ```
 
 If `main` 404s, try `master`. If both fail, skip that repo.
@@ -92,22 +94,25 @@ user's world. This is consulting-level insight, not pattern matching.
 
 ```
 BAD (literal, lazy):
-"You use Supabase, so this Supabase tool could be useful."
+"You use PostgreSQL, so this PostgreSQL tool could be useful."
 
 GOOD (creative, insightful):
 "This repo implements real-time data sync between edge functions and a central DB.
-Your Properly dashboard currently does full page refreshes to get updated property
-data — you could use this pattern to make the dashboard feel instant, with listings
-updating live as your scraper finds new data."
+Your dashboard currently does full page refreshes to get updated data — you could
+use this pattern to make the dashboard feel instant, with records updating live as
+your scraper finds new entries. The edge function approach also means you'd reduce
+load on the main DB."
 
 BAD (surface-level):
 "This automation tool could help your workflows."
 
 GOOD (specific application):
-"This is a visual workflow builder that connects to Instagram's API. Right now
-your Osh carousel pipeline is a linear script chain. If you wrapped each step
-as a node in this framework, Osh could see the pipeline visually, retry failed
-posts himself, and you could add a 'review before posting' step without code."
+"This is a visual workflow builder with API connectors. Right now your content
+pipeline is a linear script chain. If you wrapped each step as a node in this
+framework, your client could see the pipeline visually, retry failed steps
+themselves, and you could add a 'review before publishing' step without writing
+new code. When you onboard your next client, you'd clone the workflow instead
+of rebuilding the automation."
 ```
 
 The insight should answer: **"What specifically could the user BUILD or CHANGE
