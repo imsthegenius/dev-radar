@@ -1,8 +1,8 @@
 {
   "name": "dev-radar",
-  "version": "0.1.0",
   "description": "GitHub trending repos, qualified against your workspace",
-  "author": { "name": "Imraan" },
-  "license": "MIT",
-  "keywords": ["github", "trending", "developer-tools", "radar"]
+  "version": "0.1.0",
+  "author": {
+    "name": "Imraan"
+  }
 }

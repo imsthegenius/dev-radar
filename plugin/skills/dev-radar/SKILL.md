@@ -1,7 +1,6 @@
 ---
 name: dev-radar
 description: This skill should be used when the user wants to discover trending GitHub repositories and understand how they connect to their current projects. Relevant when the user asks about trending repos, what's new on GitHub, interesting open source tools, developer news, tech radar, new libraries or frameworks worth knowing about, what tools are gaining traction, or what's hot in open source.
-user-invocable: false
 ---
 
 # Dev Radar — GitHub Trending, Qualified Against Your World

@@ -1,9 +1,7 @@
 ---
-name: scan
 description: Scan GitHub trending repos and find what's relevant to your current workspace
 argument-hint: "[--daily] [--languages=python,typescript]"
-allowed-tools: Bash, Read, Glob, WebFetch
-user-invocable: true
+allowed-tools: ["Bash", "Read", "Glob", "WebFetch"]
 ---
 
 # /scan — GitHub Trending Radar
