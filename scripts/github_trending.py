@@ -35,6 +35,7 @@ class TrendingParser(HTMLParser):
         self._in_stars_today = False
         self._in_language = False
         self._in_total_stars = False
+        self._in_forks = False
         self._current = {}
         self._depth = 0
         self._capture_text = ""
@@ -52,10 +53,13 @@ class TrendingParser(HTMLParser):
             return
 
         # Repo name link: h2 > a with href like /owner/repo
+        # Repo name link: look for /owner/repo paths, skip non-repo paths
+        _NON_REPO = ("/sponsors/", "/settings/", "/features/", "/topics/",
+                      "/marketplace/", "/collections/", "/explore/", "/login")
         if tag == "a" and "href" in attrs_dict:
             href = attrs_dict["href"]
-            if tag == "a" and href.count("/") == 2 and href.startswith("/"):
-                # Check parent is h2 by looking at class pattern
+            if (href.count("/") == 2 and href.startswith("/")
+                    and not any(href.startswith(p) for p in _NON_REPO)):
                 if not self._current.get("name"):
                     parts = href.strip("/").split("/")
                     if len(parts) == 2:
@@ -67,9 +71,14 @@ class TrendingParser(HTMLParser):
             self._in_description = True
             self._capture_text = ""
 
-        # Language span (inside a small with specific class)
-        if tag == "span" and "d-inline-block" in cls and "ml-0" in cls:
+        # Language: <span itemprop="programmingLanguage">Zig</span>
+        if tag == "span" and attrs_dict.get("itemprop") == "programmingLanguage":
             self._in_language = True
+            self._capture_text = ""
+
+        # Forks: <a href="/owner/repo/forks">
+        if tag == "a" and "href" in attrs_dict and attrs_dict["href"].endswith("/forks"):
+            self._in_forks = True
             self._capture_text = ""
 
         # Stars today (float-sm-right)
@@ -102,6 +111,13 @@ class TrendingParser(HTMLParser):
             if lang:
                 self._current["language"] = lang
 
+        if tag == "a" and self._in_forks:
+            self._in_forks = False
+            text = self._capture_text.strip()
+            match = re.search(r"([\d,]+)", text)
+            if match:
+                self._current["forks"] = int(match.group(1).replace(",", ""))
+
         if tag == "span" and self._in_stars_today:
             self._in_stars_today = False
             text = self._capture_text.strip()
@@ -132,7 +148,7 @@ class TrendingParser(HTMLParser):
             self._current = {}
 
     def handle_data(self, data):
-        if self._in_description or self._in_language or self._in_stars_today or self._in_total_stars:
+        if self._in_description or self._in_language or self._in_stars_today or self._in_total_stars or self._in_forks:
             self._capture_text += data
 
 
