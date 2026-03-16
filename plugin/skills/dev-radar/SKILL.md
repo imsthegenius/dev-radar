@@ -1,6 +1,6 @@
 ---
 name: dev-radar
-description: This skill should be used when the user wants to discover trending GitHub repositories and understand how they connect to their current projects. Relevant when the user asks about trending repos, what's new on GitHub, interesting open source tools, developer news, tech radar, new libraries or frameworks worth knowing about, what tools are gaining traction, or what's hot in open source.
+description: This skill should be used when the user wants to discover trending GitHub repositories and understand how they connect to their current projects. Relevant when the user asks to scan GitHub, run dev radar, find trending repos, see what's new on GitHub, discover interesting open source tools, get developer news, check their tech radar, explore new libraries or frameworks worth knowing about, find what tools are gaining traction, see what's hot in open source, get open source recommendations, or asks "any cool new tools" or "what should I check out."
 ---
 
 # Dev Radar — GitHub Trending, Qualified Against Your World
@@ -37,12 +37,10 @@ Build a mental model of:
 
 ## Step 2 — Fetch trending repos
 
-Run the scraper. Resolve the script path using `CLAUDE_PLUGIN_ROOT` if set,
-otherwise fall back to the path relative to this skill file (`../../scripts/github_trending.py`):
+Run the scraper using `CLAUDE_PLUGIN_ROOT` (always set by Claude Code for installed plugins):
 
 ```bash
-SCRIPT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}/scripts/github_trending.py"
-python3 "$SCRIPT" --since=weekly
+python3 "$CLAUDE_PLUGIN_ROOT/scripts/github_trending.py" --since=weekly
 ```
 
 If the user passed `--daily`, use `--since=daily`.
