@@ -10,7 +10,9 @@ dev-radar is a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plu
 
 Zero API keys. Zero config. Zero pip install. Just `/scan`.
 
-<!-- Add GIF/screenshot of /scan output here -->
+<p align="center">
+  <img src="assets/screenshot.png" alt="dev-radar scan output" width="700">
+</p>
 
 ## Install
 
